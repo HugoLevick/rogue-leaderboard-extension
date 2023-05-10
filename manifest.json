@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+  "name": "Better Leaderboard for Rogue Company",
+  "version": "1.0",
+  "description": "Implements new features for the leaderboard hosted at https://roguecompany.com/leaderboard/",
+  "permissions": ["activeTab", "tabs"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png",
+    "256": "icons/icon256.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://roguecompany.com/*"],
+      "js": ["content.js"]
+    }
+  ]
+}
