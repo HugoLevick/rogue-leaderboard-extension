@@ -3,8 +3,10 @@ document.addEventListener("DOMContentLoaded", function () {
   let leaderboard = document.querySelector(".leaderboard-container");
   const main = document.querySelector("main");
 
+  //After the inital fetch has ended, obtain the player data
   const observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
+      //Player data html
       const playerElements = leaderboard.querySelectorAll(".player-data-row");
       // Create search html
       const searchContainer = document.createElement("div");
@@ -16,26 +18,25 @@ document.addEventListener("DOMContentLoaded", function () {
       <input placeholder="Search..." name="playerSearch">
       <button>Go!</button>
       &nbsp;&nbsp;&nbsp;
-    <div>
+      <div>
         <label>
-            <input type="radio" name="searchBy" value="name" checked>
-            Search by name
-        </label>
-        <label>
-            <input type="radio" name="searchBy" value="rank">
-            Search rank
-        </label>
-    </div>
+              <input type="radio" name="searchBy" value="name" checked>
+              Search by name
+          </label>
+          <label>
+              <input type="radio" name="searchBy" value="rank">
+              Search rank
+          </label>
+      </div>
 
       `;
 
       searchContainer.appendChild(form);
       main.insertBefore(searchContainer, leaderboard);
 
-      //First element is set to null so the players position is coherent with their rank
+      //Create players array
       const players = [];
 
-      //Create players array
       for (const player in playerElements) {
         const element = playerElements[player];
 
@@ -62,11 +63,11 @@ document.addEventListener("DOMContentLoaded", function () {
     subtree: true,
   };
 
-  // Start observing the element for changes
+  // Start observing the element for the fetch to end
   observer.observe(leaderboard, observerOptions);
 });
 
-//! Do NOT use single quotes
+//Function to search a player in the previously saved item "players"
 function searchPlayerInLeaderboard(event) {
   event.preventDefault();
   const searchInput = event.target.querySelector('input[name="playerSearch"]');
@@ -102,19 +103,26 @@ function searchPlayerInLeaderboard(event) {
     }
 
     if (possiblePlayers.length > 0) {
-      if (possiblePlayers.length === 1)
+      if (possiblePlayers.length === 1) {
         scrollToElement(
           document.getElementById(`playerRank#${possiblePlayers[0].rank}`)
         );
+        //Timeout to prevent alert from interfering with the scroll
+        setTimeout(() => {
+          alert(
+            `Could not find an exact match, maybe you are looking for ${possiblePlayers
+              .map((p) => p.username)
+              .join(", ")}`
+          );
+        }, 1000);
+        return;
+      }
 
-      //Timeout to prevent alert from interfering with the scroll
-      setTimeout(() => {
-        alert(
-          `Could not find an exact match, maybe you are looking for ${possiblePlayers
-            .map((p) => p.username)
-            .join(", ")}`
-        );
-      }, 1000);
+      alert(
+        `Could not find an exact match, maybe you are looking for ${possiblePlayers
+          .map((p) => p.username)
+          .join(", ")}`
+      );
 
       return;
     }
